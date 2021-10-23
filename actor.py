@@ -69,7 +69,7 @@ class NPC(Actor):
 
 
     def get_damage(self):
-        return 2
+        return 4
 
 
     def receive_damage(self, damage, damager):
@@ -203,8 +203,8 @@ class NPC(Actor):
     def action_attack(self):
         self.target_point = (self.target.pos.x, self.target.pos.y)
         if abs(self.target.pos.x - self.pos.x) <= 1 and abs(self.target.pos.y - self.pos.y) <= 1:
-            self.target.pos.x += (self.target.pos.x - self.pos.x) * 2
-            self.target.pos.y += (self.target.pos.y - self.pos.y) * 2
+            self.target.pos.x += (self.target.pos.x - self.pos.x) * self.get_damage() // 2
+            self.target.pos.y += (self.target.pos.y - self.pos.y) * self.get_damage() // 2
             self.target.receive_damage(self.get_damage(), self)
         else:
             self.move_to_target()

@@ -6,7 +6,7 @@ import random
 from constants import *
 from tileset import ColoredTileset
 from level import Level
-from menu import Text, ConfirmationBox, TextBox
+from menu import Text, ConfirmationBox, TextBox, Inventory
 from actor import Player, Point, NPC
 from item import ItemDB
 
@@ -41,10 +41,13 @@ def generate_npc(n):
     return npc
 
 def generate_items(n):
-    global itemdb
+    global itemdb, levels
     items = []
     for i in range(n):
         items.append(itemdb.create_instance_of(random.randint(0, len(itemdb.items) - 1)))
+        items[-1].pos = Point(10, 10 + i)
+        items[-1].level = 'forest'
+        levels['forest'].items.append(items[-1])
     return items
 
 def load_names():
@@ -76,7 +79,7 @@ clock = pygame.time.Clock()
 npc = generate_npc(15)
 items = generate_items(32)
 
-menus = [TextBox("Antichrist", timer=13)]
+menus = [TextBox("Antichrist", timer=13), Inventory(player)]
 
 ## Main loop
 
@@ -112,6 +115,14 @@ while game_state != GAME_FINISHED:
 
             if event.key == pygame.K_LSHIFT:
                 shift_pressed = True
+
+            if event.key == pygame.K_g:
+                if len(player.inventory) >= 7:
+                    continue
+                for item in levels[player.level].items:
+                    if item.pos.x == player.pos.x and item.pos.y == player.pos.y and len(player.inventory) < 7:
+                        player.inventory.append(item)
+                        levels[player.level].items.remove(item)
                 
             if event.key == pygame.K_q:
                 game_state = GAME_FINISHED
@@ -135,8 +146,8 @@ while game_state != GAME_FINISHED:
             ny = player.pos.y + vel_y + vel_y_m
             for actor in levels[player.level].actors:
                 if actor.pos.x == nx and actor.pos.y == ny and actor != player:
-                    actor.pos.x += (actor.pos.x - player.pos.x) * 2
-                    actor.pos.y += (actor.pos.y - player.pos.y) * 2
+                    actor.pos.x += (actor.pos.x - player.pos.x) * player.get_damage() // 2
+                    actor.pos.y += (actor.pos.y - player.pos.y) * player.get_damage() // 2
                     actor.receive_damage(player.get_damage(), player)
         else:
             player.pos.x += vel_x + vel_x_m
@@ -183,6 +194,9 @@ while game_state != GAME_FINISHED:
     levels[player.level].render(surface, tileset, position)
     for actor in levels[player.level].actors:
         levels[player.level].render_actor(surface, tileset, position, actor)
+        
+    for item in levels[player.level].items:
+        levels[player.level].render_item(surface, tileset, position, item)
     levels[player.level].render_actor(surface, tileset, position, player)
     status_text.text = f"{player.level} - {ticks} ({['night','morning','day','day','evening','night'][ticks//1000]})"
     status_text.render(surface, tileset)

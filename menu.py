@@ -14,6 +14,9 @@ class Menu:
     def handle_event(self, event):
         return False
 
+    def is_need_to_be_removed(self):
+        return False
+
 
 class Text (Menu):
     def __init__(self, position, text):
@@ -84,3 +87,14 @@ class ConfirmationBox(TextBox):
         surface.blit(message, (SCREEN_WIDTH // 2 - self.size[0] * TILE_SIZE // 2 ,
                                SCREEN_HEIGHT // 2 - self.size[1] * TILE_SIZE // 2))
 
+
+class Inventory(Menu):
+    def __init__(self, target):
+        self.target = target
+
+    def render(self, surface, tileset):
+        for i, letter in enumerate("Inventory:"):
+            surface.blit(tileset.get_tile(ord(letter)), ((1 + i) * TILE_SIZE, 1 * TILE_SIZE))
+        for ind, item in enumerate(self.target.inventory):
+            for i, letter in enumerate(str(ind + 1) + ") " + item.name):
+                surface.blit(tileset.get_tile(ord(letter)), ((1 + i) * TILE_SIZE, (3 + ind) * TILE_SIZE))

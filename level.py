@@ -12,6 +12,7 @@ class Level:
         self.width = width
         self.height = height
         self.actors = []
+        self.items = []
 
     def fill(self):
         self.tilemap = []
