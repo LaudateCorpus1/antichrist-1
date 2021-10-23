@@ -4,7 +4,7 @@ import random
 
 
 from constants import *
-from tileset import Tileset
+from tileset import ColoredTileset
 from level import Level
 from menu import Text, ConfirmationBox, TextBox
 from actor import Player, Point, NPC
@@ -60,10 +60,10 @@ surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 levels = load_levels()
 player = initialize_player()
-tileset = Tileset("res/Talryth_square_15x15.png", (TILE_SIZE, TILE_SIZE), 0, 0)
+tileset = ColoredTileset("res/texture_", (TILE_SIZE, TILE_SIZE), 0, 0)
 names = load_names()
 ticks = 0
-status_text = Text((0, MAP_HEIGHT), f"{player.level} - {ticks} ({['night','morning','day','day','evening','night'][ticks//1000]})")
+status_text = Text((INVENTORY_WIDTH, MAP_HEIGHT), f"{player.level} - {ticks} ({['night','morning','day','day','evening','night'][ticks//1000]})")
 game_state = GAME_RUNNING
 clock = pygame.time.Clock()
 
@@ -119,6 +119,11 @@ while game_state != GAME_FINISHED:
     if player.is_alive:
         player.pos.x += vel_x + vel_x_m
         player.pos.y += vel_y + vel_y_m
+    for actor in npc:
+        actor.define_current_action(ticks)
+    for actor in npc:
+        actor.act()
+
     if player.pos.x <= 0 or player.pos.y <= 0 or \
        player.pos.x >= levels[player.level].width - 1 or player.pos.y >= levels[player.level].height - 1:
         if player.level == 'village':
@@ -139,13 +144,7 @@ while game_state != GAME_FINISHED:
         levels[player.level].actors.remove(player)
         levels[next_level].actors.append(player)
         player.level = next_level
-    for actor in npc:
-        actor.define_current_action(ticks)
-    for actor in npc:
-        actor.act()
-    
-    for menu in menus:
-        menu.update(ticks)
+
     
     if not player.is_alive and not is_dead_message_created:
         def stop_game():
@@ -177,6 +176,12 @@ while game_state != GAME_FINISHED:
 
     clock.tick(FRAMERATE)
     ticks = (ticks + 1) % 6000
+
+    for actor in npc:
+        actor.update(ticks)
+    player.update(ticks)
+    for menu in menus:
+        menu.update(ticks)
 
 ## Deinit
 

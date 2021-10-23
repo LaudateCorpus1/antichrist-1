@@ -1,4 +1,5 @@
 from level import Level
+from constants import *
 from zone import Zone
 import random
 
@@ -32,9 +33,13 @@ for i in range(houses):
     for j in range(w):
         village.tilemap[y][x + j] = 205
         village.tilemap[y + h - 1][x + j] = 205
+        village.colormap[y][x + j] = COLOR_GRAY
+        village.colormap[y + h - 1][x + j] = COLOR_GRAY
     for j in range(h):
         village.tilemap[y + j][x] = 186
         village.tilemap[y + j][x + w - 1] = 186
+        village.colormap[y + j][x] = COLOR_GRAY
+        village.colormap[y + j][x + w - 1] = COLOR_GRAY
     
     village.tilemap[y][x] = 201
     village.tilemap[y][x + w - 1] = 187
@@ -68,6 +73,7 @@ for i in range(work_zones_count):
     for j in range(w):
         for k in range(h):
             village.tilemap[y + k][x + j] = ord('~')
+            village.colormap[y + k][x + j] = COLOR_YELLOW
 
 
 

@@ -24,7 +24,7 @@ class Text (Menu):
         x = self.position[0]
         y = self.position[1]
         for letter in self.text:
-            surface.blit(tileset.tiles[ord(letter)], (x * TILE_SIZE, y * TILE_SIZE))
+            surface.blit(tileset.get_tile(ord(letter)), (x * TILE_SIZE, y * TILE_SIZE))
             x += 1
 
 
@@ -47,7 +47,7 @@ class TextBox(Menu):
         pygame.draw.rect(message, (255, 255, 255), (0, 0, self.size[0] * TILE_SIZE, self.size[1] * TILE_SIZE))
         pygame.draw.rect(message, (0, 0, 0), (BORDER_WIDTH, BORDER_WIDTH, self.size[0] * TILE_SIZE - BORDER_WIDTH * 2, self.size[1] * TILE_SIZE - BORDER_WIDTH * 2))
         for ind, letter in enumerate(self.text):
-            message.blit(tileset.tiles[ord(letter)], ((2 + ind) * TILE_SIZE, 1 * TILE_SIZE))
+            message.blit(tileset.get_tile(ord(letter)), ((2 + ind) * TILE_SIZE, 1 * TILE_SIZE))
         surface.blit(message, (SCREEN_WIDTH // 2 - self.size[0] * TILE_SIZE // 2 ,
                                SCREEN_HEIGHT // 2 - self.size[1] * TILE_SIZE // 2))
 
@@ -77,10 +77,10 @@ class ConfirmationBox(TextBox):
         pygame.draw.rect(message, (255, 255, 255), (0, 0, self.size[0] * TILE_SIZE, self.size[1] * TILE_SIZE))
         pygame.draw.rect(message, (0, 0, 0), (BORDER_WIDTH, BORDER_WIDTH, self.size[0] * TILE_SIZE - BORDER_WIDTH * 2, self.size[1] * TILE_SIZE - BORDER_WIDTH * 2))
         for ind, letter in enumerate(self.text):
-            message.blit(tileset.tiles[ord(letter)], ((2 + ind) * TILE_SIZE, 1 * TILE_SIZE))
+            message.blit(tileset.get_tile(ord(letter)), ((2 + ind) * TILE_SIZE, 1 * TILE_SIZE))
             
         for ind, letter in enumerate("[ok]"):
-            message.blit(tileset.tiles[ord(letter)], ((2 + len(self.text) // 2 - 2 + ind) * TILE_SIZE, 3 * TILE_SIZE))
+            message.blit(tileset.get_tile(ord(letter)), ((2 + len(self.text) // 2 - 2 + ind) * TILE_SIZE, 3 * TILE_SIZE))
         surface.blit(message, (SCREEN_WIDTH // 2 - self.size[0] * TILE_SIZE // 2 ,
                                SCREEN_HEIGHT // 2 - self.size[1] * TILE_SIZE // 2))
 
