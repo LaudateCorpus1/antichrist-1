@@ -10,6 +10,7 @@ class Level:
         self.zones = []
         self.width = width
         self.height = height
+        self.actors = []
 
     def fill(self):
         self.tilemap = []
