@@ -8,6 +8,7 @@ from tileset import ColoredTileset
 from level import Level
 from menu import Text, ConfirmationBox, TextBox
 from actor import Player, Point, NPC
+from item import ItemDB
 
 
 ## Helpers
@@ -40,7 +41,10 @@ def generate_npc(n):
     return npc
 
 def generate_items(n):
+    global itemdb
     items = []
+    for i in range(n):
+        items.append(itemdb.create_instance_of(random.randint(0, len(itemdb.items) - 1)))
     return items
 
 def load_names():
@@ -58,6 +62,8 @@ pygame.display.set_caption('Antichrist')
 
 surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+itemdb = ItemDB("res/items.json")
+itemdb.load()
 levels = load_levels()
 player = initialize_player()
 tileset = ColoredTileset("res/texture_", (TILE_SIZE, TILE_SIZE), 0, 0)
@@ -78,6 +84,7 @@ vel_x = 0
 vel_x_m = 0
 vel_y = 0
 vel_y_m = 0
+shift_pressed = False
 
 is_dead_message_created = False
 
@@ -102,6 +109,9 @@ while game_state != GAME_FINISHED:
                 vel_y_m = -1
             if event.key == pygame.K_DOWN:
                 vel_y = 1
+
+            if event.key == pygame.K_LSHIFT:
+                shift_pressed = True
                 
             if event.key == pygame.K_q:
                 game_state = GAME_FINISHED
@@ -114,11 +124,23 @@ while game_state != GAME_FINISHED:
                 vel_y_m = 0
             if event.key == pygame.K_DOWN and vel_y == 1:
                 vel_y = 0
+
+            if event.key == pygame.K_LSHIFT:
+                shift_pressed = False
                     
     # Update game state
     if player.is_alive:
-        player.pos.x += vel_x + vel_x_m
-        player.pos.y += vel_y + vel_y_m
+        if shift_pressed:
+            nx = player.pos.x + vel_x + vel_x_m
+            ny = player.pos.y + vel_y + vel_y_m
+            for actor in levels[player.level].actors:
+                if actor.pos.x == nx and actor.pos.y == ny and actor != player:
+                    actor.pos.x += (actor.pos.x - player.pos.x) * 2
+                    actor.pos.y += (actor.pos.y - player.pos.y) * 2
+                    actor.receive_damage(player.get_damage(), player)
+        else:
+            player.pos.x += vel_x + vel_x_m
+            player.pos.y += vel_y + vel_y_m
     for actor in npc:
         actor.define_current_action(ticks)
     for actor in npc:

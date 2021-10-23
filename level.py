@@ -84,3 +84,10 @@ class Level:
         ny = actor.pos.y - position[1]
         if nx < 0 or ny < 0 or nx >= size[0] or ny >= size[1]: return
         surface.blit(tileset.get_tile(actor.tile, actor.color), ((nx + INVENTORY_WIDTH) * TILE_SIZE, ny * TILE_SIZE))
+
+    def render_item(self, surface, tileset, position, item, size=(33, 33)):
+        nx = item.pos.x - position[0]
+        ny = item.pos.y - position[1]
+        if nx < 0 or ny < 0 or nx >= size[0] or ny >= size[1]: return
+        surface.blit(tileset.get_tile(item.tile, item.color), ((nx + INVENTORY_WIDTH) * TILE_SIZE, ny * TILE_SIZE))
+

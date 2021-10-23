@@ -1,0 +1,20 @@
+[
+    {
+	"name": "cucumber",
+	"symbol": "o",
+	"color": "green",
+	"type": "food"
+    },
+    {
+	"name": "rusty sword",
+	"symbol": ")",
+	"color": "yellow",
+	"type": "weapon"
+    },
+    {
+	"name": "a book",
+	"symbol": "v",
+	"color": "white",
+	"type": "book"
+    }
+]

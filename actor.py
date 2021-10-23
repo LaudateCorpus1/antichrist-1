@@ -32,15 +32,17 @@ class Actor:
         self.pos.x += dx
         self.pos.y += dy
 
-    def receive_damage(self, damage):
+    def receive_damage(self, damage, damager):
         if not self.is_alive: return
         self.health -= damage
         self.color = COLOR_RED
         if self.health <= 0:
             self.is_alive = False
+            self.tile = ord('%')
+            self.base_color = COLOR_RED
 
     def get_damage(self):
-        return 0
+        return 1
 
     def update(self, ticks):
         if self.base_color != self.color:
@@ -68,6 +70,12 @@ class NPC(Actor):
 
     def get_damage(self):
         return 2
+
+
+    def receive_damage(self, damage, damager):
+        super().receive_damage(damage, damager)
+        self.target = damager
+        self.current_action = 'attack'
 
 
     def define_current_action(self, ticks):
@@ -194,9 +202,10 @@ class NPC(Actor):
 
     def action_attack(self):
         self.target_point = (self.target.pos.x, self.target.pos.y)
-        self.move_to_target()
         if abs(self.target.pos.x - self.pos.x) <= 1 and abs(self.target.pos.y - self.pos.y) <= 1:
             self.target.pos.x += (self.target.pos.x - self.pos.x) * 2
             self.target.pos.y += (self.target.pos.y - self.pos.y) * 2
-            self.target.receive_damage(self.get_damage())
+            self.target.receive_damage(self.get_damage(), self)
+        else:
+            self.move_to_target()
 
