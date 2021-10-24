@@ -30,8 +30,8 @@ def generate_npc(n):
         npc[-1].house = levels['village'].zones[i]
         npc[-1].work_zone = random.choice(levels['village'].zones[-4:])
         for j in range(n):
-            npc[-1].relations[names[j]] = 10
-        npc[-1].relations[names[i]] = 100
+            npc[-1].relations[names[j]] = 100 + random.randint(1, 20)
+        npc[-1].relations[names[i]] = 1000
 
     for i in range(random.randint(2, 4)):
         guardian_id = random.randint(0, len(npc) - 1)
